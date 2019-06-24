@@ -21,7 +21,33 @@ player = Player("Name", world.startingRoom)
 
 
 # FILL THIS IN
-traversalPath = ['n', 's']
+traversalPath = []
+reversedPath = []
+reversed_directions = {'n':'s', 's':'n','e':'w', 'w':'e'}
+visited = set()
+
+# while there are still unvisited rooms
+while len(visited) < len(roomGraph):
+	# initialize next move as None
+	next_move = None
+	# for each exit (n,s,w,e) in the room
+	for direction in player.currentRoom.getExits():
+		# if that direction has not been visited, set it as the next room
+		if player.currentRoom.getRoomInDirection(direction) not in visited:
+			next_move = direction
+	# if there was a viable move...
+	if next_move is not None:
+		traversalPath.append(next_move)
+		# breadcrumb trail to get back out
+		reversedPath.append(reversed_directions[next_move])
+		player.travel(next_move)
+		visited.add(player.currentRoom)
+	else:
+		# if there is no next move, go back 
+		next_move = reversedPath.pop()
+		traversalPath.append(next_move)
+		player.travel(next_move)
+		visited.add(player.currentRoom)
 
 
 # TRAVERSAL TEST
